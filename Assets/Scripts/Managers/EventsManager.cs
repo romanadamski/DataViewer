@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class EventsManager : BaseManager<EventsManager>
+public class EventsManager : SingletonBase<EventsManager>
 {
     public event Action<uint> PlayerLoseLife;
     public void OnPlayerLoseLife(uint livesCount)

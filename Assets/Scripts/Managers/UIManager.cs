@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class UIManager : BaseManager<UIManager>
+public class UIManager : SingletonBase<UIManager>
 {
     [SerializeField]
     private List<BaseMenu> menuPrefabs;
@@ -19,7 +19,7 @@ public class UIManager : BaseManager<UIManager>
     {
         foreach (var menu in menuPrefabs)
         {
-            _menus.Add(Instantiate(menu, GameLauncher.Instance.Canvas.transform));
+            _menus.Add(Instantiate(menu, MainCanvasController.Instance.Canvas.transform));
         }
     }
 

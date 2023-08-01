@@ -1,4 +1,4 @@
-public class GameManager : BaseManager<GameManager>
+public class GameManager : SingletonBase<GameManager>
 {
     #region States
 
