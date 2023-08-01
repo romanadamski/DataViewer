@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,9 +14,19 @@ public class DataRowMenu : BaseMenu
     private Button nextButton;
     [SerializeField]
     private Transform dataParent;
+    [SerializeField]
+    private Sprite activeButton;
+    [SerializeField]
+    private Sprite inactiveButton;
 
-    private List<DataItem> _itemData;
+    private IList<DataItem> _itemData;
     private DataRowPoolingController dataRowPool;
+    private IDataServer _dataServer;
+    private System.Threading.CancellationTokenSource _tokenSource;
+    private int _currentPageIndex;
+    private int _pagesCount;
+    private bool _isPrevButtonInteractable => _currentPageIndex > 0;
+    private bool _isNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
 
     private void Awake()
     {
@@ -24,28 +35,77 @@ public class DataRowMenu : BaseMenu
         previousButton.onClick.AddListener(OnPreviousButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
         dataRowPool.Init();
-    }
-    //todo read and display data
-    private void Start()
-    {
-        _itemData = testGetData();
-        PopulateView(_itemData);
+
+        _dataServer = new DataServerMock();
+        _tokenSource = new System.Threading.CancellationTokenSource();
+        _currentPageIndex = 0;
     }
 
-    private List<DataItem> testGetData()
+    public override void Show()
     {
-        Array values = Enum.GetValues(typeof(DataItem.CategoryType));
-        System.Random random = new System.Random();
-        List<DataItem> items = new List<DataItem>();
-        for (int i = 0; i < 5; i++)
+        base.Show();
+        test();
+    }
+
+    private async Task test()
+    {
+        await test1();
+        await test2(0);
+        RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
+        RefreshNavigationButton(nextButton, _isNextButtonInteractable);
+    }
+
+    private async Task test1()
+    {
+        _tokenSource = new System.Threading.CancellationTokenSource();
+        var t = _dataServer.DataAvailable(_tokenSource.Token);
+        try
         {
-            items.Add(new DataItem(
-                    (DataItem.CategoryType)values.GetValue(random.Next(values.Length)),
-                    random.NextDouble().ToString(),
-                    i % 2 == 0
-                ));
+            await t;
         }
-        return items;
+        catch (OperationCanceledException ex)
+        {
+            Debug.Log(ex.Message);
+        }
+        finally
+        {
+            if (!_tokenSource.Token.IsCancellationRequested)
+            {
+                _pagesCount = Mathf.CeilToInt(t.Result / 5f);
+                Debug.Log(t.Result);
+            }
+            _tokenSource.Dispose();
+            _tokenSource = new System.Threading.CancellationTokenSource();
+        }
+    }
+
+    private async Task test2(int pageIndex)
+    {
+        _tokenSource = new System.Threading.CancellationTokenSource();
+        Debug.Log($"_currentPage {_currentPageIndex} requestedPage {pageIndex}");
+        var t = _dataServer.RequestData(pageIndex, 5, _tokenSource.Token);
+        try
+        {
+            await t;
+        }
+        catch (OperationCanceledException ex)
+        {
+            Debug.Log(ex.Message);
+        }
+        finally
+        {
+            if (!_tokenSource.Token.IsCancellationRequested)
+            {
+                _itemData = t.Result;
+                PopulateView(_itemData);
+
+                RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
+                RefreshNavigationButton(nextButton, _isNextButtonInteractable);
+            }
+
+            _tokenSource.Dispose();
+            _tokenSource = new System.Threading.CancellationTokenSource();
+        }
     }
 
     private void PopulateView(IList<DataItem> dataItems)
@@ -69,17 +129,27 @@ public class DataRowMenu : BaseMenu
         dataRowPool.ReleaseAll();
     }
 
-    private void OnPreviousButtonClick()
+    private async void OnPreviousButtonClick()
     {
+        _tokenSource.Cancel();
         ClaerView();
-        _itemData = testGetData();
-        PopulateView(_itemData);
+        var page = _currentPageIndex - 1;
+        await test2(page);
+        _currentPageIndex--;
     }
 
-    private void OnNextButtonClick()
+    private async void OnNextButtonClick()
     {
+        _tokenSource.Cancel();
         ClaerView();
-        _itemData = testGetData();
-        PopulateView(_itemData);
+        var page = _currentPageIndex + 1;
+        await test2(page);
+        _currentPageIndex++;
+    }
+
+    private void RefreshNavigationButton(Button button, bool isInteractable)
+    {
+        button.interactable = isInteractable;
+        button.image.sprite = isInteractable ? activeButton : inactiveButton;
     }
 }

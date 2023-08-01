@@ -54,6 +54,8 @@ MonoBehaviour:
   previousButton: {fileID: 4950863684295473787}
   nextButton: {fileID: 8735217992102578125}
   dataParent: {fileID: 6336673555546195760}
+  activeButton: {fileID: 21300000, guid: 35b66b8cf009b9745bdac3f8b994d411, type: 3}
+  inactiveButton: {fileID: 21300000, guid: 791c59f626b7495498b55116543f1888, type: 3}
 --- !u!114 &8892336759792720574
 MonoBehaviour:
   m_ObjectHideFlags: 0

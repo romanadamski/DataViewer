@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+//todo row animation
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]
@@ -25,6 +25,8 @@ public class DataRow : MonoBehaviour
         badge.sprite = GetRowBadge(dataItem.Category);
         dataText.text = dataItem.Description;
         rowNumber.text = number.ToString();
+        transform.SetSiblingIndex(number);
+
         if (dataItem.Special)
         {
             //todo glow
