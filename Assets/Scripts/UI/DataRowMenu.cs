@@ -50,9 +50,8 @@ public class DataRowMenu : BaseMenu
     private async Task test()
     {
         await test1();
-        await test2(0);
-        RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
-        RefreshNavigationButton(nextButton, _isNextButtonInteractable);
+        RefreshNavigationButtons();
+        await test2();
     }
 
     private async Task test1()
@@ -79,11 +78,11 @@ public class DataRowMenu : BaseMenu
         }
     }
 
-    private async Task test2(int pageIndex)
+    private async Task test2()
     {
         _tokenSource = new System.Threading.CancellationTokenSource();
-        Debug.Log($"_currentPage {_currentPageIndex} requestedPage {pageIndex}");
-        var t = _dataServer.RequestData(pageIndex, 5, _tokenSource.Token);
+        Debug.Log($"_currentPage {_currentPageIndex}");
+        var t = _dataServer.RequestData(_currentPageIndex, 5, _tokenSource.Token);
         try
         {
             await t;
@@ -99,8 +98,7 @@ public class DataRowMenu : BaseMenu
                 _itemData = t.Result;
                 PopulateView(_itemData);
 
-                RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
-                RefreshNavigationButton(nextButton, _isNextButtonInteractable);
+                //RefreshNavigationButtons();
             }
 
             _tokenSource.Dispose();
@@ -133,18 +131,24 @@ public class DataRowMenu : BaseMenu
     {
         _tokenSource.Cancel();
         ClaerView();
-        var page = _currentPageIndex - 1;
-        await test2(page);
         _currentPageIndex--;
+        RefreshNavigationButtons();
+        await test2();
     }
 
     private async void OnNextButtonClick()
     {
         _tokenSource.Cancel();
         ClaerView();
-        var page = _currentPageIndex + 1;
-        await test2(page);
         _currentPageIndex++;
+        RefreshNavigationButtons();
+        await test2();
+    }
+
+    private void RefreshNavigationButtons()
+    {
+        RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
+        RefreshNavigationButton(nextButton, _isNextButtonInteractable);
     }
 
     private void RefreshNavigationButton(Button button, bool isInteractable)

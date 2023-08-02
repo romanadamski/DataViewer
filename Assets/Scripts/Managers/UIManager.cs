@@ -19,7 +19,7 @@ public class UIManager : SingletonBase<UIManager>
     {
         foreach (var menu in menuPrefabs)
         {
-            _menus.Add(Instantiate(menu, MainCanvasController.Instance.Canvas.transform));
+            _menus.Add(Instantiate(menu, GameLauncher.Instance.Canvas.transform));
         }
     }
 
