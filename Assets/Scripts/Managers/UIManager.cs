@@ -5,21 +5,37 @@ using UnityEngine;
 public class UIManager : SingletonBase<UIManager>
 {
     [SerializeField]
-    private List<BaseMenu> menuPrefabs;
+    private List<BaseUIElement> menuPrefabs;
 
-    private List<BaseMenu> _menus = new List<BaseMenu>();
+    [SerializeField]
+    private LoadingScreen loadingScreen;
+    public LoadingScreen LoadingScreen { get; private set; }
+
+    private List<BaseUIElement> _menus = new List<BaseUIElement>();
 
     private void Awake()
     {
+        InitMenus();
+        InitLoadingScreen();
+    }
+
+    private void InitMenus()
+    {
         CreateMenus();
         HideAllMenus();
+    }
+
+    private void InitLoadingScreen()
+    {
+        LoadingScreen = Instantiate(loadingScreen, MainCanvas.Instance.Canvas.transform);
+        LoadingScreen.Hide();
     }
 
     private void CreateMenus()
     {
         foreach (var menu in menuPrefabs)
         {
-            _menus.Add(Instantiate(menu, GameLauncher.Instance.Canvas.transform));
+            _menus.Add(Instantiate(menu, MainCanvas.Instance.MenusParent.transform));
         }
     }
 
@@ -31,7 +47,7 @@ public class UIManager : SingletonBase<UIManager>
         }
     }
 
-    public bool TryGetMenuByType<T>(out T menu) where T : BaseMenu
+    public bool TryGetMenuByType<T>(out T menu) where T : BaseUIElement
     {
         menu = _menus.FirstOrDefault(x => x.GetType().Equals(typeof(T))) as T;
         if (menu)

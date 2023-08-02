@@ -46,3 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuPrefabs:
   - {fileID: -5122122648500682428, guid: 0f49284f8a89ce3428af1ba49f914603, type: 3}
+  loadingScreen: {fileID: 2235460062555689293, guid: 3a54711c57983eb49b84ee1a13cced02, type: 3}

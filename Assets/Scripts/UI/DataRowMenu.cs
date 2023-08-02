@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(DataRowPoolingController))]
-public class DataRowMenu : BaseMenu
+public class DataRowMenu : BaseUIElement
 {
     [Header("Fields")]
     [SerializeField]
@@ -98,7 +98,8 @@ public class DataRowMenu : BaseMenu
                 _itemData = t.Result;
                 PopulateView(_itemData);
 
-                //RefreshNavigationButtons();
+                RefreshNavigationButtons();
+                UIManager.Instance.LoadingScreen.Hide();
             }
 
             _tokenSource.Dispose();
@@ -129,19 +130,19 @@ public class DataRowMenu : BaseMenu
 
     private async void OnPreviousButtonClick()
     {
+        UIManager.Instance.LoadingScreen.Show();
         _tokenSource.Cancel();
         ClaerView();
         _currentPageIndex--;
-        RefreshNavigationButtons();
         await test2();
     }
 
     private async void OnNextButtonClick()
     {
+        UIManager.Instance.LoadingScreen.Show();
         _tokenSource.Cancel();
         ClaerView();
         _currentPageIndex++;
-        RefreshNavigationButtons();
         await test2();
     }
 

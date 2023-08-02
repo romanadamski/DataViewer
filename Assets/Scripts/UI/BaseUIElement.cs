@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BaseMenu : MonoBehaviour
+public class BaseUIElement : MonoBehaviour
 {
     public virtual void Show()
     {
