@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 //todo row animation
+//todo better row prefab
+//todo testy
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]
@@ -11,6 +13,8 @@ public class DataRow : MonoBehaviour
     private TextMeshProUGUI rowNumber;
     [SerializeField]
     private TextMeshProUGUI dataText;
+    [SerializeField]
+    private GameObject glow;
 
     [Header("Badge sprites")]
     [SerializeField]
@@ -26,12 +30,7 @@ public class DataRow : MonoBehaviour
         dataText.text = dataItem.Description;
         rowNumber.text = number.ToString();
         transform.SetSiblingIndex(number);
-
-        if (dataItem.Special)
-        {
-            //todo glow
-            //Debug.Log("GLOW");
-        }
+        glow.SetActive(dataItem.Special);
     }
 
     private Sprite GetRowBadge(DataItem.CategoryType categoryType)

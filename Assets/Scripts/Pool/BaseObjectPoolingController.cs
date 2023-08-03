@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class BaseObjectPoolingController<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : MonoBehaviour
 {
     [SerializeField]
     private T prefab;

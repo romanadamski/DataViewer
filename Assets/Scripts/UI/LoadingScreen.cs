@@ -9,7 +9,10 @@ using DG.Tweening;
 public class LoadingScreen : BaseUIElement
 {
     [SerializeField]
-    RectTransform _loadingCircle;
+    private RectTransform loadingCircle;
+    [Range(0,1)]
+    [SerializeField]
+    private float rotateDuration;
 
     public override void Show()
     {
@@ -19,8 +22,9 @@ public class LoadingScreen : BaseUIElement
 
     private void PlayLoadingAnimation()
     {
-        _loadingCircle
-            .DORotate(new Vector3(0, 0, 360), 0.7f)
+        loadingCircle.localEulerAngles = Vector3.zero;
+        loadingCircle
+            .DORotate(new Vector3(0, 0, 360), rotateDuration)
             .SetRelative()
             .SetLoops(-1, LoopType.Restart)
             .SetEase(Ease.Linear);
@@ -29,6 +33,6 @@ public class LoadingScreen : BaseUIElement
     public override void Hide()
     {
         base.Hide();
-        _loadingCircle.DOKill();
+        loadingCircle.DOKill();
     }
 }

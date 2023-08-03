@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 [RequireComponent(typeof(DataRowPoolingController))]
 public class DataRowMenu : BaseUIElement
@@ -18,15 +20,21 @@ public class DataRowMenu : BaseUIElement
     private Sprite activeButton;
     [SerializeField]
     private Sprite inactiveButton;
+    [Range(1,5)]
+    [SerializeField]
+    private int rowsPerPage;
 
-    private IList<DataItem> _itemData;
     private DataRowPoolingController dataRowPool;
-    private IDataServer _dataServer;
-    private System.Threading.CancellationTokenSource _tokenSource;
     private int _currentPageIndex;
     private int _pagesCount;
+    private int _dataCount;
+
     private bool _isPrevButtonInteractable => _currentPageIndex > 0;
     private bool _isNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
+
+    [Inject]
+    private IDataServer _dataServer;
+    private CancellationTokenSource _tokenSource;
 
     private void Awake()
     {
@@ -34,68 +42,71 @@ public class DataRowMenu : BaseUIElement
 
         previousButton.onClick.AddListener(OnPreviousButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
-        dataRowPool.Init();
+        dataRowPool.Init(rowsPerPage, rowsPerPage);
 
-        _dataServer = new DataServerMock();
-        _tokenSource = new System.Threading.CancellationTokenSource();
         _currentPageIndex = 0;
+        _tokenSource = new CancellationTokenSource();
     }
 
     public override void Show()
     {
         base.Show();
-        test();
+        LoadView();
     }
 
-    private async Task test()
+    private async void LoadView()
     {
-        await test1();
-        RefreshNavigationButtons();
-        await test2();
+        _dataCount = await GetDataCount();
+        _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
+        Debug.Log(_dataCount);
+        if (_pagesCount == 0) return;
+
+        await GetData();
     }
 
-    private async Task test1()
+    private async Task<int> GetDataCount()
     {
-        _tokenSource = new System.Threading.CancellationTokenSource();
-        var t = _dataServer.DataAvailable(_tokenSource.Token);
+        _tokenSource = new CancellationTokenSource();
+        var dataAvailableTask = _dataServer.DataAvailable(_tokenSource.Token);
         try
         {
-            await t;
+            await dataAvailableTask;
         }
         catch (OperationCanceledException ex)
         {
-            Debug.Log(ex.Message);
+            Debug.LogError(ex.Message);
+            return 0;
         }
         finally
         {
-            if (!_tokenSource.Token.IsCancellationRequested)
-            {
-                _pagesCount = Mathf.CeilToInt(t.Result / 5f);
-                Debug.Log(t.Result);
-            }
             _tokenSource.Dispose();
-            _tokenSource = new System.Threading.CancellationTokenSource();
+            _tokenSource = new CancellationTokenSource();
         }
+
+        return dataAvailableTask.Result;
     }
 
-    private async Task test2()
+    private async Task GetData()
     {
-        _tokenSource = new System.Threading.CancellationTokenSource();
-        Debug.Log($"_currentPage {_currentPageIndex}");
-        var t = _dataServer.RequestData(_currentPageIndex, 5, _tokenSource.Token);
+        
+        _tokenSource = new CancellationTokenSource();
+        var requestedRows = Math.Min(rowsPerPage, _dataCount - _currentPageIndex * rowsPerPage);
+        var requestedIndex = _currentPageIndex * rowsPerPage;
+        var requestDataTask = _dataServer.RequestData(requestedIndex, requestedRows, _tokenSource.Token);
+        Debug.Log($"_currentPage {_currentPageIndex} {requestedIndex} {requestedRows}");
         try
         {
-            await t;
+            await requestDataTask;
         }
         catch (OperationCanceledException ex)
         {
-            Debug.Log(ex.Message);
+            Debug.LogError(ex.Message);
         }
         finally
         {
             if (!_tokenSource.Token.IsCancellationRequested)
             {
-                _itemData = t.Result;
+                var _itemData = requestDataTask.Result;
                 PopulateView(_itemData);
 
                 RefreshNavigationButtons();
@@ -103,7 +114,7 @@ public class DataRowMenu : BaseUIElement
             }
 
             _tokenSource.Dispose();
-            _tokenSource = new System.Threading.CancellationTokenSource();
+            _tokenSource = new CancellationTokenSource();
         }
     }
 
@@ -111,11 +122,11 @@ public class DataRowMenu : BaseUIElement
     {
         for (int i = 0; i < dataItems.Count;i++)
         {
-            PopulateView(dataItems[i], i + 1);
+            PopulateRow(dataItems[i], i + 1);
         }
     }
 
-    private void PopulateView(DataItem dataItem, int number)
+    private void PopulateRow(DataItem dataItem, int number)
     {
         var dataRow = dataRowPool.Get();
         if (!dataRow) return;
@@ -131,19 +142,17 @@ public class DataRowMenu : BaseUIElement
     private async void OnPreviousButtonClick()
     {
         UIManager.Instance.LoadingScreen.Show();
-        _tokenSource.Cancel();
         ClaerView();
         _currentPageIndex--;
-        await test2();
+        await GetData();
     }
 
     private async void OnNextButtonClick()
     {
         UIManager.Instance.LoadingScreen.Show();
-        _tokenSource.Cancel();
         ClaerView();
         _currentPageIndex++;
-        await test2();
+        await GetData();
     }
 
     private void RefreshNavigationButtons()

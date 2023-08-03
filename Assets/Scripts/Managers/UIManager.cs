@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class UIManager : SingletonBase<UIManager>
 {
@@ -12,6 +13,8 @@ public class UIManager : SingletonBase<UIManager>
     public LoadingScreen LoadingScreen { get; private set; }
 
     private List<BaseUIElement> _menus = new List<BaseUIElement>();
+    [Inject]
+    private DiContainer _diContainer;
 
     private void Awake()
     {
@@ -27,7 +30,7 @@ public class UIManager : SingletonBase<UIManager>
 
     private void InitLoadingScreen()
     {
-        LoadingScreen = Instantiate(loadingScreen, MainCanvas.Instance.Canvas.transform);
+        LoadingScreen = _diContainer.InstantiatePrefab(loadingScreen, MainCanvas.Instance.Canvas.transform).GetComponent<LoadingScreen>();
         LoadingScreen.Hide();
     }
 
@@ -35,7 +38,7 @@ public class UIManager : SingletonBase<UIManager>
     {
         foreach (var menu in menuPrefabs)
         {
-            _menus.Add(Instantiate(menu, MainCanvas.Instance.MenusParent.transform));
+            _menus.Add(_diContainer.InstantiatePrefab(menu, MainCanvas.Instance.MenusParent.transform).GetComponent<BaseUIElement>());
         }
     }
 

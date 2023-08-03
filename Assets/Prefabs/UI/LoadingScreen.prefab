@@ -126,7 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a699a4d8e5544584890b4922854696f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadingCircle: {fileID: 2020112162214762102}
+  loadingCircle: {fileID: 2020112162214762102}
+  rotateDuration: 0.8
 --- !u!222 &4050066730243126591
 CanvasRenderer:
   m_ObjectHideFlags: 0

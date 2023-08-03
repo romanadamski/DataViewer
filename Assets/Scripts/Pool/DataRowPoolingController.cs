@@ -1,7 +1,7 @@
 ﻿public class DataRowPoolingController : BaseObjectPoolingController<DataRow>
 {
-    public void Init()
+    public void Init(int defaultCapacity, int maxSize)
     {
-        Init(defaultCapacity: 5, maxSize: 5);
+        base.Init(defaultCapacity: defaultCapacity, maxSize: maxSize);
     }
 }
