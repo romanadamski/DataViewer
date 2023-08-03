@@ -294,6 +294,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2973669409340752809}
   - component: {fileID: 4539339645924854170}
+  - component: {fileID: 5351172847190723088}
   m_Layer: 5
   m_Name: DataRow
   m_TagString: Untagged
@@ -342,6 +343,18 @@ MonoBehaviour:
   badgeRed: {fileID: 21300000, guid: 913784118b817fe4384ce103c833124d, type: 3}
   badgeGreen: {fileID: 21300000, guid: c0ec1740b6ff89f438f2aff2dbec5c18, type: 3}
   badgeBlue: {fileID: 21300000, guid: 83aee970cf7c9fb4d925933b074e294f, type: 3}
+--- !u!114 &5351172847190723088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195958412875038921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3a249b6b7cd114a9274a36e3fa3353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2484790916192398760
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,10 +9,12 @@ public class UIManager : SingletonBase<UIManager>
     private List<BaseUIElement> menuPrefabs;
 
     [SerializeField]
-    private LoadingScreen loadingScreen;
+    private LoadingScreen loadingScreenPrefab;
     public LoadingScreen LoadingScreen { get; private set; }
 
+
     private List<BaseUIElement> _menus = new List<BaseUIElement>();
+
     [Inject]
     private DiContainer _diContainer;
 
@@ -30,7 +32,7 @@ public class UIManager : SingletonBase<UIManager>
 
     private void InitLoadingScreen()
     {
-        LoadingScreen = _diContainer.InstantiatePrefab(loadingScreen, MainCanvas.Instance.Canvas.transform).GetComponent<LoadingScreen>();
+        LoadingScreen = _diContainer.InstantiatePrefab(loadingScreenPrefab, MainCanvas.Instance.Canvas.transform).GetComponent<LoadingScreen>();
         LoadingScreen.Hide();
     }
 

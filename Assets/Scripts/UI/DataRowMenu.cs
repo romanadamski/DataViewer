@@ -10,6 +10,7 @@ using Zenject;
 public class DataRowMenu : BaseUIElement
 {
     [Header("Fields")]
+
     [SerializeField]
     private Button previousButton;
     [SerializeField]
@@ -24,13 +25,13 @@ public class DataRowMenu : BaseUIElement
     [SerializeField]
     private int rowsPerPage;
 
-    private DataRowPoolingController dataRowPool;
+    private DataRowPoolingController _dataRowPool;
     private int _currentPageIndex;
     private int _pagesCount;
     private int _dataCount;
 
-    private bool _isPrevButtonInteractable => _currentPageIndex > 0;
-    private bool _isNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
+    private bool IsPrevButtonInteractable => _currentPageIndex > 0;
+    private bool IsNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
 
     [Inject]
     private IDataServer _dataServer;
@@ -38,14 +39,13 @@ public class DataRowMenu : BaseUIElement
 
     private void Awake()
     {
-        dataRowPool = GetComponent<DataRowPoolingController>();
+        _dataRowPool = GetComponent<DataRowPoolingController>();
 
         previousButton.onClick.AddListener(OnPreviousButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
-        dataRowPool.Init(rowsPerPage, rowsPerPage);
+        _dataRowPool.Init(rowsPerPage, rowsPerPage);
 
         _currentPageIndex = 0;
-        _tokenSource = new CancellationTokenSource();
     }
 
     public override void Show()
@@ -56,9 +56,10 @@ public class DataRowMenu : BaseUIElement
 
     private async void LoadView()
     {
+        UIManager.Instance.LoadingScreen.Show();
         _dataCount = await GetDataCount();
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
-        Debug.Log(_dataCount);
+
         if (_pagesCount == 0) return;
 
         await GetData();
@@ -80,7 +81,6 @@ public class DataRowMenu : BaseUIElement
         finally
         {
             _tokenSource.Dispose();
-            _tokenSource = new CancellationTokenSource();
         }
 
         return dataAvailableTask.Result;
@@ -88,12 +88,11 @@ public class DataRowMenu : BaseUIElement
 
     private async Task GetData()
     {
-        
         _tokenSource = new CancellationTokenSource();
         var requestedRows = Math.Min(rowsPerPage, _dataCount - _currentPageIndex * rowsPerPage);
         var requestedIndex = _currentPageIndex * rowsPerPage;
         var requestDataTask = _dataServer.RequestData(requestedIndex, requestedRows, _tokenSource.Token);
-        Debug.Log($"_currentPage {_currentPageIndex} {requestedIndex} {requestedRows}");
+
         try
         {
             await requestDataTask;
@@ -106,15 +105,14 @@ public class DataRowMenu : BaseUIElement
         {
             if (!_tokenSource.Token.IsCancellationRequested)
             {
-                var _itemData = requestDataTask.Result;
-                PopulateView(_itemData);
+                ClearView();
+                PopulateView(requestDataTask.Result);
 
                 RefreshNavigationButtons();
                 UIManager.Instance.LoadingScreen.Hide();
             }
 
             _tokenSource.Dispose();
-            _tokenSource = new CancellationTokenSource();
         }
     }
 
@@ -122,27 +120,27 @@ public class DataRowMenu : BaseUIElement
     {
         for (int i = 0; i < dataItems.Count;i++)
         {
-            PopulateRow(dataItems[i], i + 1);
+            PopulateRow(dataItems[i], (i + 1) + _currentPageIndex * rowsPerPage);
         }
     }
 
     private void PopulateRow(DataItem dataItem, int number)
     {
-        var dataRow = dataRowPool.Get();
+        var dataRow = _dataRowPool.Get();
         if (!dataRow) return;
 
-        dataRow.GetComponent<DataRow>().Init(dataItem, number);
+        dataRow.Init(dataItem, number);
+        dataRow.transform.SetAsLastSibling();
     }
 
-    private void ClaerView()
+    private void ClearView()
     {
-        dataRowPool.ReleaseAll();
+        _dataRowPool.ReleaseAll();
     }
 
     private async void OnPreviousButtonClick()
     {
         UIManager.Instance.LoadingScreen.Show();
-        ClaerView();
         _currentPageIndex--;
         await GetData();
     }
@@ -150,15 +148,14 @@ public class DataRowMenu : BaseUIElement
     private async void OnNextButtonClick()
     {
         UIManager.Instance.LoadingScreen.Show();
-        ClaerView();
         _currentPageIndex++;
         await GetData();
     }
 
     private void RefreshNavigationButtons()
     {
-        RefreshNavigationButton(previousButton, _isPrevButtonInteractable);
-        RefreshNavigationButton(nextButton, _isNextButtonInteractable);
+        RefreshNavigationButton(previousButton, IsPrevButtonInteractable);
+        RefreshNavigationButton(nextButton, IsNextButtonInteractable);
     }
 
     private void RefreshNavigationButton(Button button, bool isInteractable)

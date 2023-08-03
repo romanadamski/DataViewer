@@ -1,12 +1,17 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-//todo row animation
-//todo better row prefab
 //todo testy
+//todo przeniesc klasy do folderow
+//todo wywalic nieuzywane pliki
+//todo obsluga bledow - jakis komunikat
+//todo load data po wczytaniu reszty
+//todo komentarze
+//todo loading screen wywolania
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]
+
     [SerializeField]
     private Image badge;
     [SerializeField]
@@ -17,6 +22,7 @@ public class DataRow : MonoBehaviour
     private GameObject glow;
 
     [Header("Badge sprites")]
+
     [SerializeField]
     private Sprite badgeRed;
     [SerializeField]
@@ -24,12 +30,11 @@ public class DataRow : MonoBehaviour
     [SerializeField]
     private Sprite badgeBlue;
 
-    public void Init(DataItem dataItem, int number)
+    public void Init(DataItem dataItem, int number )
     {
         badge.sprite = GetRowBadge(dataItem.Category);
         dataText.text = dataItem.Description;
         rowNumber.text = number.ToString();
-        transform.SetSiblingIndex(number);
         glow.SetActive(dataItem.Special);
     }
 
