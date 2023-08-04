@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,13 +28,13 @@ public class DataRowMenu : BaseUIElement
     private int _currentPageIndex;
     private int _pagesCount;
     private int _dataCount;
+    private IList<DataItem> _dataItems;
 
-    private bool IsPrevButtonInteractable => _currentPageIndex > 0;
+    private bool IsPreviousButtonInteractable => _currentPageIndex > 0;
     private bool IsNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
 
     [Inject]
-    private IDataServer _dataServer;
-    private CancellationTokenSource _tokenSource;
+    private IDataServerWrapper _dataServerWrapper;
 
     private void Awake()
     {
@@ -48,72 +47,35 @@ public class DataRowMenu : BaseUIElement
         _currentPageIndex = 0;
     }
 
-    public override void Show()
+    public override async void Show()
     {
         base.Show();
-        LoadView();
-    }
 
-    private async void LoadView()
-    {
         UIManager.Instance.LoadingScreen.Show();
-        _dataCount = await GetDataCount();
+        _dataCount = await _dataServerWrapper.GetDataCount();
+
+        if (_dataCount == 0) return;
+
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
 
-        if (_pagesCount == 0) return;
+        await LoadData();
 
-        await GetData();
+        RefreshView();
     }
 
-    private async Task<int> GetDataCount()
+    private async Task LoadData()
     {
-        _tokenSource = new CancellationTokenSource();
-        var dataAvailableTask = _dataServer.DataAvailable(_tokenSource.Token);
-        try
-        {
-            await dataAvailableTask;
-        }
-        catch (OperationCanceledException ex)
-        {
-            Debug.LogError(ex.Message);
-            return 0;
-        }
-        finally
-        {
-            _tokenSource.Dispose();
-        }
-
-        return dataAvailableTask.Result;
-    }
-
-    private async Task GetData()
-    {
-        _tokenSource = new CancellationTokenSource();
         var requestedRows = Math.Min(rowsPerPage, _dataCount - _currentPageIndex * rowsPerPage);
         var requestedIndex = _currentPageIndex * rowsPerPage;
-        var requestDataTask = _dataServer.RequestData(requestedIndex, requestedRows, _tokenSource.Token);
+        _dataItems = await _dataServerWrapper.GetData(requestedRows, requestedIndex);
+    }
 
-        try
-        {
-            await requestDataTask;
-        }
-        catch (OperationCanceledException ex)
-        {
-            Debug.LogError(ex.Message);
-        }
-        finally
-        {
-            if (!_tokenSource.Token.IsCancellationRequested)
-            {
-                ClearView();
-                PopulateView(requestDataTask.Result);
-
-                RefreshNavigationButtons();
-                UIManager.Instance.LoadingScreen.Hide();
-            }
-
-            _tokenSource.Dispose();
-        }
+    private void RefreshView()
+    {
+        ClearView();
+        PopulateView(_dataItems);
+        RefreshNavigationButtons();
+        UIManager.Instance.LoadingScreen.Hide();
     }
 
     private void PopulateView(IList<DataItem> dataItems)
@@ -140,21 +102,28 @@ public class DataRowMenu : BaseUIElement
 
     private async void OnPreviousButtonClick()
     {
-        UIManager.Instance.LoadingScreen.Show();
         _currentPageIndex--;
-        await GetData();
+        await LoadCurrentPage();
     }
 
     private async void OnNextButtonClick()
     {
-        UIManager.Instance.LoadingScreen.Show();
         _currentPageIndex++;
-        await GetData();
+        await LoadCurrentPage();
+    }
+
+    private async Task LoadCurrentPage()
+    {
+        UIManager.Instance.LoadingScreen.Show();
+
+        await LoadData();
+
+        RefreshView();
     }
 
     private void RefreshNavigationButtons()
     {
-        RefreshNavigationButton(previousButton, IsPrevButtonInteractable);
+        RefreshNavigationButton(previousButton, IsPreviousButtonInteractable);
         RefreshNavigationButton(nextButton, IsNextButtonInteractable);
     }
 
