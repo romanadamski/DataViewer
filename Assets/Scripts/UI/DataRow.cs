@@ -36,17 +36,11 @@ public class DataRow : MonoBehaviour
     }
 
     private Sprite GetRowBadge(DataItem.CategoryType categoryType)
-    {
-        switch (categoryType)
+        => categoryType switch
         {
-            case DataItem.CategoryType.RED:
-                return badgeRed;
-            case DataItem.CategoryType.GREEN:
-                return badgeGreen;
-            case DataItem.CategoryType.BLUE:
-                return badgeBlue;
-            default:
-                return null;
-        }
-    }
+            DataItem.CategoryType.RED => badgeRed,
+            DataItem.CategoryType.GREEN => badgeGreen,
+            DataItem.CategoryType.BLUE => badgeBlue,
+            _ => null,
+        };
 }

@@ -20,7 +20,7 @@ public class DataRowMenu : BaseUIElement
     private Sprite activeButton;
     [SerializeField]
     private Sprite inactiveButton;
-    [Range(1,5)]
+    [Range(1, 5)]
     [SerializeField]
     private int rowsPerPage;
 
@@ -33,8 +33,10 @@ public class DataRowMenu : BaseUIElement
     private bool IsPreviousButtonInteractable => _currentPageIndex > 0;
     private bool IsNextButtonInteractable => _currentPageIndex < _pagesCount - 1;
 
+#pragma warning disable 0649
     [Inject]
-    private IDataServerWrapper _dataServerWrapper;
+    private readonly IDataServerWrapper _dataServerWrapper;
+#pragma warning restore 0649
 
     private void Awake()
     {
@@ -42,6 +44,7 @@ public class DataRowMenu : BaseUIElement
 
         previousButton.onClick.AddListener(OnPreviousButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
+
         _dataRowPool.Init(rowsPerPage, rowsPerPage);
     }
 
@@ -51,8 +54,6 @@ public class DataRowMenu : BaseUIElement
 
         UIManager.Instance.LoadingScreen.Show();
         _dataCount = await _dataServerWrapper.GetDataCount();
-
-        if (_dataCount == 0) return;
 
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
         _currentPageIndex = 0;
@@ -79,7 +80,7 @@ public class DataRowMenu : BaseUIElement
 
     private void PopulateView(IList<DataItem> dataItems)
     {
-        for (int i = 0; i < dataItems.Count;i++)
+        for (int i = 0; i < dataItems.Count; i++)
         {
             PopulateRow(dataItems[i], (i + 1) + _currentPageIndex * rowsPerPage);
         }

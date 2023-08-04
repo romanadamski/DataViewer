@@ -1,15 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
+
 public class DataServerWrapper : IDataServerWrapper
 {
+#pragma warning disable 0649
     [Inject]
-    private IDataServer _dataServer;
+    private readonly IDataServer _dataServer;
+#pragma warning restore 0649
+
     private CancellationTokenSource _tokenSource;
 
     public async Task<int> GetDataCount()

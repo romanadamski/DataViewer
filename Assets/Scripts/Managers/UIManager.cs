@@ -12,10 +12,12 @@ public class UIManager : SingletonBase<UIManager>
     private LoadingScreen loadingScreenPrefab;
     public LoadingScreen LoadingScreen { get; private set; }
 
-    private List<BaseUIElement> _menus = new List<BaseUIElement>();
+    private readonly List<BaseUIElement> _menus = new();
 
+#pragma warning disable 0649
     [Inject]
-    private DiContainer _diContainer;
+    private readonly DiContainer _diContainer;
+#pragma warning restore 0649
 
     private void Awake()
     {

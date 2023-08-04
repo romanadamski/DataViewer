@@ -1,12 +1,12 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using UnityEngine;
-using DG.Tweening;
 
 public class LoadingScreen : BaseUIElement
 {
     [SerializeField]
     private RectTransform loadingCircle;
-    [Range(0,1)]
+    [Range(0, 1)]
     [SerializeField]
     private float rotateDuration;
 

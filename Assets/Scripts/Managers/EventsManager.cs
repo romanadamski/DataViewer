@@ -13,13 +13,13 @@ public class EventsManager : SingletonBase<EventsManager>
     {
         PlayerSpawned?.Invoke(livesCount);
     }
-    
+
     public event Action AsteroidShotted;
     public void OnAsteroidShotted()
     {
         AsteroidShotted?.Invoke();
     }
-    
+
     public event Action<uint> LevelStarted;
     public void OnLevelStarted(uint levelNumber)
     {
