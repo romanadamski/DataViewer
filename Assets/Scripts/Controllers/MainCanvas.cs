@@ -9,5 +9,4 @@ public class MainCanvas : SingletonBase<MainCanvas>
     [SerializeField]
     private Transform menusParent;
     public Transform MenusParent => menusParent;
-
 }

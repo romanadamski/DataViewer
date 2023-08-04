@@ -43,8 +43,6 @@ public class DataRowMenu : BaseUIElement
         previousButton.onClick.AddListener(OnPreviousButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
         _dataRowPool.Init(rowsPerPage, rowsPerPage);
-
-        _currentPageIndex = 0;
     }
 
     public override async void Show()
@@ -57,6 +55,7 @@ public class DataRowMenu : BaseUIElement
         if (_dataCount == 0) return;
 
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
+        _currentPageIndex = 0;
 
         await LoadData();
 

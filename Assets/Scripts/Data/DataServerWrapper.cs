@@ -16,6 +16,7 @@ public class DataServerWrapper : IDataServerWrapper
     {
         _tokenSource = new CancellationTokenSource();
         var dataAvailableTask = _dataServer.DataAvailable(_tokenSource.Token);
+
         try
         {
             await dataAvailableTask;
@@ -45,6 +46,7 @@ public class DataServerWrapper : IDataServerWrapper
         catch (OperationCanceledException ex)
         {
             Debug.LogError(ex.Message);
+            return new List<DataItem>();
         }
         finally
         {

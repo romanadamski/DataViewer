@@ -12,7 +12,6 @@ public class UIManager : SingletonBase<UIManager>
     private LoadingScreen loadingScreenPrefab;
     public LoadingScreen LoadingScreen { get; private set; }
 
-
     private List<BaseUIElement> _menus = new List<BaseUIElement>();
 
     [Inject]

@@ -2,12 +2,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 //todo testy
-//todo przeniesc klasy do folderow
 //todo wywalic nieuzywane pliki
 //todo obsluga bledow - jakis komunikat
-//todo load data po wczytaniu reszty
 //todo komentarze
-//todo loading screen wywolania
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]
@@ -30,7 +27,7 @@ public class DataRow : MonoBehaviour
     [SerializeField]
     private Sprite badgeBlue;
 
-    public void Init(DataItem dataItem, int number )
+    public void Init(DataItem dataItem, int number)
     {
         badge.sprite = GetRowBadge(dataItem.Category);
         dataText.text = dataItem.Description;
