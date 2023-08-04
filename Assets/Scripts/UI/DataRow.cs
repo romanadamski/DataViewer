@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 //todo testy
 //todo wywalic nieuzywane pliki
-//todo obsluga bledow - jakis komunikat
 //todo komentarze
 public class DataRow : MonoBehaviour
 {
