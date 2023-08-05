@@ -2,10 +2,15 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// UI element which blocks input when active
+/// </summary>
 public class LoadingScreen : BaseUIElement
 {
     [SerializeField]
     private RectTransform loadingCircle;
+
+    [Tooltip("How fast loading circle make full turn (in secnods)")]
     [Range(0, 1)]
     [SerializeField]
     private float rotateDuration;

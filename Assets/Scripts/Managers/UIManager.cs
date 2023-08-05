@@ -6,13 +6,13 @@ using Zenject;
 public class UIManager : SingletonBase<UIManager>
 {
     [SerializeField]
-    private List<BaseUIElement> menuPrefabs;
+    private List<BaseUIElement> uiElementPrefabs;
 
     [SerializeField]
     private LoadingScreen loadingScreenPrefab;
     public LoadingScreen LoadingScreen { get; private set; }
 
-    private readonly List<BaseUIElement> _menus = new();
+    private readonly List<BaseUIElement> _uiElements = new();
 
 #pragma warning disable 0649
     [Inject]
@@ -21,14 +21,14 @@ public class UIManager : SingletonBase<UIManager>
 
     private void Awake()
     {
-        InitMenus();
+        InitUIElements();
         InitLoadingScreen();
     }
 
-    private void InitMenus()
+    private void InitUIElements()
     {
-        CreateMenus();
-        HideAllMenus();
+        CreateUIElements();
+        HideAllUIElements();
     }
 
     private void InitLoadingScreen()
@@ -37,29 +37,33 @@ public class UIManager : SingletonBase<UIManager>
         LoadingScreen.Hide();
     }
 
-    private void CreateMenus()
+    private void CreateUIElements()
     {
-        foreach (var menu in menuPrefabs)
+        foreach (var uiElement in uiElementPrefabs)
         {
-            _menus.Add(_diContainer.InstantiatePrefab(menu, MainCanvas.Instance.MenusParent.transform).GetComponent<BaseUIElement>());
+            _uiElements.Add(_diContainer.InstantiatePrefab(uiElement, MainCanvas.Instance.MenusParent.transform).GetComponent<BaseUIElement>());
         }
     }
 
-    private void HideAllMenus()
+    private void HideAllUIElements()
     {
-        foreach (var menu in _menus)
+        foreach (var uiElement in _uiElements)
         {
-            menu.Hide();
+            uiElement.Hide();
         }
     }
 
-    public bool TryGetMenuByType<T>(out T menu) where T : BaseUIElement
+    /// <summary>
+    /// Try to get UI Element of given type.
+    /// </summary>
+    /// <typeparam name="T">BaseUIElement type.</typeparam>
+    /// <returns>True if found UIElement of given type.</returns>
+    public bool TryGetUIElementByType<T>(out T uiElement) where T : BaseUIElement
     {
-        menu = _menus.FirstOrDefault(x => x.GetType().Equals(typeof(T))) as T;
-        if (menu)
-        {
-            return true;
-        }
+        uiElement = _uiElements.FirstOrDefault(x => x.GetType().Equals(typeof(T))) as T;
+        
+        if (uiElement) return true;
+        
         return false;
     }
 }

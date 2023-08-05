@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d7cc63d144d3a46a2c1b096d365428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuPrefabs:
+  uiElementPrefabs:
   - {fileID: -5122122648500682428, guid: 0f49284f8a89ce3428af1ba49f914603, type: 3}
   loadingScreenPrefab: {fileID: 2235460062555689293, guid: 3a54711c57983eb49b84ee1a13cced02, type: 3}

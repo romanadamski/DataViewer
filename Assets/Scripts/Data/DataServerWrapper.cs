@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-
 public class DataServerWrapper : IDataServerWrapper
 {
 #pragma warning disable 0649
@@ -15,6 +14,10 @@ public class DataServerWrapper : IDataServerWrapper
 
     private CancellationTokenSource _tokenSource;
 
+    /// <summary>
+    /// An async function that returns the amount of requested data.
+    /// </summary>
+    /// <returns>Requested data amount.</returns>
     public async Task<int> GetDataCount()
     {
         _tokenSource = new CancellationTokenSource();
@@ -37,10 +40,16 @@ public class DataServerWrapper : IDataServerWrapper
         return dataAvailableTask.Result;
     }
 
-    public async Task<IList<DataItem>> GetData(int requestedRows, int requestedIndex)
+    /// <summary>
+    /// An async function that returns requested data.
+    /// </summary>
+    /// <param name="startIndex">Starting index of the requested data.</param>
+    /// <param name="requestedRows">Amount of requested data.</param>
+    /// <returns>IList object of requested data.</returns>
+    public async Task<IList<DataItem>> GetData(int startIndex, int requestedRows)
     {
         _tokenSource = new CancellationTokenSource();
-        var requestDataTask = _dataServer.RequestData(requestedIndex, requestedRows, _tokenSource.Token);
+        var requestDataTask = _dataServer.RequestData(startIndex, requestedRows, _tokenSource.Token);
 
         try
         {

@@ -2,8 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 //todo testy
-//todo wywalic nieuzywane pliki
-//todo komentarze
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]

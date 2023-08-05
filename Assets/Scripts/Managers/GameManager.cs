@@ -1,9 +1,12 @@
+/// <summary>
+/// Manage game state machine and its states
+/// </summary>
 public class GameManager : SingletonBase<GameManager>
 {
     #region States
 
     private StateMachine gameStateMachine;
-    public MainMenuState MainMenuState;
+    private MainMenuState MainMenuState;
 
     #endregion
 
@@ -13,7 +16,7 @@ public class GameManager : SingletonBase<GameManager>
         GoToMainMenu();
     }
 
-    public void GoToMainMenu()
+    private void GoToMainMenu()
     {
         gameStateMachine.SetState(MainMenuState);
     }

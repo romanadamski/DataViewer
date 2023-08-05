@@ -6,7 +6,7 @@ public class MainMenuState : State
 
     protected override void OnEnter()
     {
-        if (_mainMenu || UIManager.Instance.TryGetMenuByType(out _mainMenu))
+        if (_mainMenu || UIManager.Instance.TryGetUIElementByType(out _mainMenu))
         {
             _mainMenu.Show();
         }
@@ -14,7 +14,7 @@ public class MainMenuState : State
 
     protected override void OnExit()
     {
-        if (_mainMenu || UIManager.Instance.TryGetMenuByType(out _mainMenu))
+        if (_mainMenu || UIManager.Instance.TryGetUIElementByType(out _mainMenu))
         {
             _mainMenu.Hide();
         }

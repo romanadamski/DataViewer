@@ -52,22 +52,29 @@ public class DataRowMenu : BaseUIElement
     {
         base.Show();
 
+        //Show loading screen to block input while loading data
         UIManager.Instance.LoadingScreen.Show();
+        
+        //First, get data count to calculate page count
         _dataCount = await _dataServerWrapper.GetDataCount();
-
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
+
+        //Set current page index to first one on menu show
         _currentPageIndex = 0;
 
+        //Load data and refresh view
         await LoadData();
-
         RefreshView();
+
+        //Restore input
+        UIManager.Instance.LoadingScreen.Hide();
     }
 
     private async Task LoadData()
     {
         var requestedRows = Math.Min(rowsPerPage, _dataCount - _currentPageIndex * rowsPerPage);
-        var requestedIndex = _currentPageIndex * rowsPerPage;
-        _dataItems = await _dataServerWrapper.GetData(requestedRows, requestedIndex);
+        var startIndex = _currentPageIndex * rowsPerPage;
+        _dataItems = await _dataServerWrapper.GetData(startIndex, requestedRows);
     }
 
     private void RefreshView()
@@ -75,14 +82,14 @@ public class DataRowMenu : BaseUIElement
         ClearView();
         PopulateView(_dataItems);
         RefreshNavigationButtons();
-        UIManager.Instance.LoadingScreen.Hide();
     }
 
     private void PopulateView(IList<DataItem> dataItems)
     {
         for (int i = 0; i < dataItems.Count; i++)
         {
-            PopulateRow(dataItems[i], (i + 1) + _currentPageIndex * rowsPerPage);
+            var currentDataRowNumber = (i + 1) + _currentPageIndex * rowsPerPage;
+            PopulateRow(dataItems[i], currentDataRowNumber);
         }
     }
 
@@ -114,11 +121,15 @@ public class DataRowMenu : BaseUIElement
 
     private async Task LoadCurrentPage()
     {
+        //show loading screen to block input while loading data
         UIManager.Instance.LoadingScreen.Show();
 
         await LoadData();
 
         RefreshView();
+
+        //Restore input
+        UIManager.Instance.LoadingScreen.Hide();
     }
 
     private void RefreshNavigationButtons()

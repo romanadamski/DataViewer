@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
-
+/// <summary>
+/// Single state machine which handles switching between related states.
+/// </summary>
 public class StateMachine : MonoBehaviour
 {
     private State _currentState;
 
+    /// <summary>
+    /// Exit current state and ented given one.
+    /// </summary>
+    /// <param name="state">State we want enter to.</param>
     public void SetState(State state)
     {
         if (_currentState != null)
@@ -24,6 +30,9 @@ public class StateMachine : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when we exit entire state machine.
+    /// </summary>
     public void Clear()
     {
         if (_currentState != null)
