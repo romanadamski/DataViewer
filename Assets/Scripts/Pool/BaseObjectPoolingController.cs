@@ -6,14 +6,14 @@ using UnityEngine.Pool;
 /// <summary>
 /// Base class for pooling objects using UnityEngine's ObjectPool mechanism, stack based.
 /// </summary>
-/// <typeparam name="T">MonoBehaviour's type we want to pool</typeparam>
+/// <typeparam name="T">MonoBehaviour's type we want to pool.</typeparam>
 public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : MonoBehaviour
 {
-    [Tooltip("Prefab of object we want to pool")]
+    [Tooltip("Prefab of object we want to pool.")]
     [SerializeField]
     private T prefab;
 
-    [Tooltip("Every object from pool will be instantiate under this object")]
+    [Tooltip("Every object from pool will be instantiate under this object.")]
     [SerializeField]
     private Transform parent;
 
@@ -35,7 +35,8 @@ public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : M
     }
 
     /// <summary>
-    /// Called when object is instantiate. Can be overriden.
+    /// Called when object is instantiate.
+    /// Can be overriden.
     /// </summary>
     /// <returns>Instantiaded object.</returns>
     protected virtual T OnCreate()
@@ -46,7 +47,8 @@ public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : M
     }
 
     /// <summary>
-    /// Called when object is taken from pool. Can be overriden.
+    /// Called when object is taken from pool.
+    /// Can be overriden.
     /// </summary>
     /// <param name="obj">Object we get from pool.</param>
     protected virtual void OnGet(T obj)
@@ -56,7 +58,8 @@ public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : M
     }
 
     /// <summary>
-    /// Called when object is returned from pool. Can be overriden.
+    /// Called when object is returned from pool.
+    /// Can be overriden.
     /// </summary>
     /// <param name="obj">Returned object.</param>
     protected virtual void OnObjectRelease(T obj)
@@ -66,7 +69,8 @@ public abstract class BaseObjectPoolingController<T> : MonoBehaviour where T : M
     }
 
     /// <summary>
-    /// Called when object is destroyed. Can be overriden.
+    /// Called when object is destroyed.
+    /// Can be overriden.
     /// </summary>
     /// <param name="obj">Destroyed object.</param>
     protected virtual void OnObjectDestroy(T obj)

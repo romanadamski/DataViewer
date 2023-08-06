@@ -5,13 +5,27 @@
 /// </summary>
 public class BaseUIElement : MonoBehaviour
 {
-    public virtual void Show()
+    /// <summary>
+    /// Called after show ui element.
+    /// Can be overriden.
+    /// </summary>
+    public virtual void OnShow() { }
+
+    /// <summary>
+    /// Called after hide ui element.
+    /// Can be overriden.
+    /// </summary>
+    public virtual void OnHide() { }
+
+    public void Show()
     {
         gameObject.SetActive(true);
+        OnShow();
     }
 
-    public virtual void Hide()
+    public void Hide()
     {
         gameObject.SetActive(false);
+        OnHide();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 /// <summary>
 /// Single state machine which handles switching between related states.
 /// </summary>
@@ -7,7 +8,7 @@ public class StateMachine : MonoBehaviour
     private State _currentState;
 
     /// <summary>
-    /// Exit current state and ented given one.
+    /// Exit current state and enter given one.
     /// </summary>
     /// <param name="state">State we want enter to.</param>
     public void SetState(State state)

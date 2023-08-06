@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Base class for all singletons.
+/// Base class for singletons.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
@@ -9,7 +9,7 @@ public class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
     private static T _instance;
 
     /// <summary>
-    /// Instance of <typeparamref name="T"/>
+    /// Singleton instance of <typeparamref name="T"/>
     /// </summary>
     public static T Instance
     {

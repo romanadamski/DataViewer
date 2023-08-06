@@ -48,14 +48,12 @@ public class DataRowMenu : BaseUIElement
         _dataRowPool.Init(rowsPerPage, rowsPerPage);
     }
 
-    public override async void Show()
+    public override async void OnShow()
     {
-        base.Show();
-
         //Show loading screen to block input while loading data
         UIManager.Instance.LoadingScreen.Show();
         
-        //First, get data count to calculate page count
+        //Get data count to calculate page count
         _dataCount = await _dataServerWrapper.GetDataCount();
         _pagesCount = Mathf.CeilToInt((float)_dataCount / rowsPerPage);
 

@@ -15,9 +15,8 @@ public class LoadingScreen : BaseUIElement
     [SerializeField]
     private float rotateDuration;
 
-    public override void Show()
+    public override void OnShow()
     {
-        base.Show();
         PlayLoadingAnimation();
     }
 
@@ -31,9 +30,8 @@ public class LoadingScreen : BaseUIElement
             .SetEase(Ease.Linear);
     }
 
-    public override void Hide()
+    public override void OnHide()
     {
-        base.Hide();
         loadingCircle.DOKill();
     }
 }

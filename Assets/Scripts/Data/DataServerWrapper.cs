@@ -45,7 +45,7 @@ public class DataServerWrapper : IDataServerWrapper
     /// </summary>
     /// <param name="startIndex">Starting index of the requested data.</param>
     /// <param name="requestedRows">Amount of requested data.</param>
-    /// <returns>IList object of requested data.</returns>
+    /// <returns>IList of requested data.</returns>
     public async Task<IList<DataItem>> GetData(int startIndex, int requestedRows)
     {
         _tokenSource = new CancellationTokenSource();

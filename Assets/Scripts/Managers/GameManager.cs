@@ -1,5 +1,5 @@
 /// <summary>
-/// Manage game state machine and its states
+/// Manage main game state machine and its states.
 /// </summary>
 public class GameManager : SingletonBase<GameManager>
 {
