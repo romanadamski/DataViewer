@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-//todo testy
+
 public class DataRow : MonoBehaviour
 {
     [Header("Fields")]
