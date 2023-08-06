@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: StribogGamesChallenge
+  companyName: RomanAdamski
+  productName: DataViewer
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -154,6 +154,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.RomanAdamski.DataViewer
     Standalone: com.DefaultCompany.2DProject
   buildNumber:
     Standalone: 0
@@ -279,7 +280,9 @@ PlayerSettings:
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: f1ece689a192e2b4f98829a1029120a7, type: 3}
+      - {fileID: 2800000, guid: 1f9c398953acd7143b44c9eda718a53f, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
